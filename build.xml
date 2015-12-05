@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="phpunit-documentation" default="build">
+ <target name="build" depends="html,epub,pdf"/>
+
+ <target name="clean" unless="clean.done" description="Cleanup build artifacts">
+  <delete dir="${basedir}/build"/>
+  <property name="clean.done" value="true"/>
+ </target>
+
+ <target name="prepare" unless="prepare.done" depends="clean" description="Prepare for build">
+  <mkdir dir="${basedir}/build"/>
+
+  <concat destfile="${basedir}/build/book.md">
+   <fileset file="${basedir}/src/metadata.md"/>
+   <fileset file="${basedir}/src/installation.md"/>
+   <fileset file="${basedir}/src/writing-tests-for-phpunit.md"/>
+   <fileset file="${basedir}/src/textui.md"/>
+   <fileset file="${basedir}/src/fixtures.md"/>
+   <fileset file="${basedir}/src/organizing-tests.md"/>
+   <fileset file="${basedir}/src/risky-tests.md"/>
+   <fileset file="${basedir}/src/incomplete-and-skipped-tests.md"/>
+   <fileset file="${basedir}/src/database.md"/>
+   <fileset file="${basedir}/src/test-doubles.md"/>
+   <fileset file="${basedir}/src/testing-practices.md"/>
+   <fileset file="${basedir}/src/code-coverage-analysis.md"/>
+   <fileset file="${basedir}/src/other-uses-for-tests.md"/>
+   <fileset file="${basedir}/src/logging.md"/>
+   <fileset file="${basedir}/src/extending-phpunit.md"/>
+   <fileset file="${basedir}/src/assertions.md"/>
+   <fileset file="${basedir}/src/annotations.md"/>
+   <fileset file="${basedir}/src/configuration.md"/>
+   <fileset file="${basedir}/src/bibliography.md"/>
+   <fileset file="${basedir}/src/copyright.md"/>
+  </concat>
+
+  <property name="prepare.done" value="true"/>
+</target>
+
+ <target name="html" depends="prepare" description="Build HTML edition of the book">
+  <exec executable="pandoc">
+   <arg value="--chapters"/>
+   <arg value="--self-contained"/>
+   <arg value="--smart"/>
+   <arg value="--table-of-contents"/>
+   <arg value="--to=html5"/>
+   <arg value="--output"/>
+   <arg path="${basedir}/build/phpunit.html"/>
+   <arg path="${basedir}/build/book.md"/>
+  </exec>
+ </target>
+
+ <target name="epub" depends="prepare" description="Build ePub edition of the book">
+  <exec executable="pandoc">
+   <arg value="--chapters"/>
+   <arg value="--self-contained"/>
+   <arg value="--smart"/>
+   <arg value="--table-of-contents"/>
+   <arg value="--output"/>
+   <arg path="${basedir}/build/phpunit.epub"/>
+   <arg path="${basedir}/build/book.md"/>
+  </exec>
+ </target>
+
+ <target name="pdf" depends="prepare" description="Build PDF edition of the book">
+  <exec executable="pandoc">
+   <arg value="--chapters"/>
+   <arg value="--self-contained"/>
+   <arg value="--smart"/>
+   <arg value="--table-of-contents"/>
+   <arg value="--include-in-header=tex/header.tex"/>
+   <arg value="--variable=geometry:a5paper"/>
+   <arg value="--output"/>
+   <arg path="${basedir}/build/phpunit.pdf"/>
+   <arg path="${basedir}/build/book.md"/>
+  </exec>
+ </target>
+</project>
+
